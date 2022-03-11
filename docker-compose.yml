@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  DB:
+    image: postgis/postgis
+    restart: always
+    env_file:
+      - db.env
+    expose:
+      - "5432"
+    ports:
+      - 5435:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+  MIGRATION_DEV:
+    image: node:16-alpine
+    working_dir: /opt/app/backend
+    command: >
+      sh -c "yarn
+             yarn run mi:run"
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - backend_dev.env
+    depends_on:
+      - DB
+  SERVER_DEV:
+    image: node:16-alpine
+    restart: always
+    working_dir: /opt/app/backend
+    command: >
+      sh -c "yarn
+             yarn run start:dev"
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - backend_dev.env
+    ports:
+      - 80:3000
+    depends_on:
+      - DB
+

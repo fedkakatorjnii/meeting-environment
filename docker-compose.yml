@@ -1,8 +1,8 @@
-version: '3.8'
+version: '3.3'
 
 services:
   DB:
-    image: postgis/postgis
+    image: meeting_db
     restart: unless-stopped
     env_file:
       - db.env
@@ -20,7 +20,7 @@ services:
     expose:
       - 6379
   MIGRATION_DEV:
-    image: node:16-alpine
+    image: meeting_backend
     working_dir: /opt/app/backend
     command: >
       sh -c "yarn
@@ -32,7 +32,7 @@ services:
     depends_on:
       - DB
   INSTALL:
-    image: node:16-alpine
+    image: meeting_backend
     restart: always
     working_dir: /opt/app/backend
     command: >
@@ -41,12 +41,16 @@ services:
       - ./app:/opt/app
     env_file:
       - backend_dev.env
-    ports:
-      - 3001:3000
-    depends_on:
-      - DB
+  EMPTY:
+    image: meeting_backend
+    restart: unless-stopped
+    working_dir: /opt/app/backend
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - backend_dev.env
   SERVER_DEV:
-    image: node:16-alpine
+    image: meeting_backend
     restart: unless-stopped
     working_dir: /opt/app/backend
     command: >

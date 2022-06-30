@@ -8,16 +8,20 @@
   - `./app/backend` - backend;
   - `./app/frontend` - frontend.
 
-2. Создайте файлы с переменными среды окружения:
+2. Создание образов (все образы лежит в папке `images`): 
+  - `docker build -t meeting_backend .` - создание образа для backend;
+  - `docker build -t meeting_db .` - создание образа БД.
+
+3. Создайте файлы с переменными среды окружения:
   - `db.env` - БД;
   - `backend_dev.env` - dev сервера (находится в `app/backend`репозиторие);
   - `frontend_dev.env` - dev frontend (находится в `app/frontend`репозиторие);
 
-3. Поднимите БД `docker-compose up DB`.
+4. Поднимите БД `docker-compose up DB`.
 
-4. Запуск миграций `docker-compose up MIGRATION_DEV`.
+5. Запуск миграций `docker-compose up MIGRATION_DEV`.
 
-5. Запуск миграций `docker-compose up SERVER_DEV`.
+6. Запуск миграций `docker-compose up SERVER_DEV`.
 
 ## Доступные инструкции:
 - `DB` - запуск базы данных;

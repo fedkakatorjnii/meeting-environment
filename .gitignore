@@ -1,8 +1,10 @@
 # Environments
 db.env
+mongo.env
 backend_dev.env
 
 # App
 app
 db
 
+.DS_Store

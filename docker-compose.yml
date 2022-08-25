@@ -23,14 +23,20 @@ services:
     image: node:16-alpine
     working_dir: /opt/app/backend
     command: >
-      sh -c "yarn
-             yarn run mi:run"
+      sh -c "yarn run mi:run"
     volumes:
       - ./app:/opt/app
     env_file:
       - backend_dev.env
     depends_on:
       - DB
+  MONGO:
+    image: mongo
+    restart: unless-stopped
+    env_file:
+      - mongo.env
+    volumes:
+      - ./db:/var/lib/postgresql/data
   INSTALL:
     image: node:16-alpine
     restart: always
@@ -45,12 +51,30 @@ services:
       - 3001:3000
     depends_on:
       - DB
+  SERVER:
+    image: node:16-alpine
+    restart: unless-stopped
+    working_dir: /opt/app/backend
+    command: >
+      sh -c "yarn run start"
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - backend_dev.env
+    ports:
+      - 3001:3000
+    depends_on:
+      - DB
+      - REDIS
   SERVER_DEV:
     image: node:16-alpine
     restart: unless-stopped
     working_dir: /opt/app/backend
     command: >
-      sh -c "yarn run start:dev"
+      sh -c "
+             rm -rf dist
+             yarn run start:dev
+            "
     volumes:
       - ./app:/opt/app
     env_file:

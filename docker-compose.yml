@@ -31,9 +31,8 @@ services:
       - backend_dev.env
     depends_on:
       - DB
-  INSTALL:
+  INSTALL_BACK:
     image: meeting_backend
-    restart: always
     working_dir: /opt/app/backend
     command: >
       sh -c "yarn"
@@ -41,14 +40,29 @@ services:
       - ./app:/opt/app
     env_file:
       - backend_dev.env
-  EMPTY:
+  INSTALL_FRONT:
+    image: meeting_frontend
+    working_dir: /opt/app/frontend
+    command: >
+      sh -c "yarn"
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - frontend_dev.env
+  EMPTY_BACK:
     image: meeting_backend
-    restart: unless-stopped
     working_dir: /opt/app/backend
     volumes:
       - ./app:/opt/app
     env_file:
       - backend_dev.env
+  EMPTY_FRONT:
+    image: meeting_frontend
+    working_dir: /opt/app/frontend
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - frontend_dev.env
   SERVER_DEV:
     image: meeting_backend
     restart: unless-stopped
@@ -59,8 +73,24 @@ services:
       - ./app:/opt/app
     env_file:
       - backend_dev.env
+    expose:
+      - "3000"
     ports:
-      - 3001:3000
+      - 0.0.0.0:3000:3000
     depends_on:
       - DB
       - REDIS
+  FRONTEND_DEV:
+    image: meeting_frontend
+    restart: unless-stopped
+    working_dir: /opt/app/frontend
+    command: >
+      sh -c "yarn run start"
+    volumes:
+      - ./app:/opt/app
+    env_file:
+      - frontend_dev.env
+    ports:
+      - 0.0.0.0:8080:8080
+    depends_on:
+      - SERVER_DEV

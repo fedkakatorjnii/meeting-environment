@@ -2,8 +2,11 @@
 db.env
 backend_dev.env
 frontend_dev.env
+mongo.env
 
 # App
 app
 /db
 
+# system
+.DS_Store

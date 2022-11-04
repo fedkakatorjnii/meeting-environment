@@ -1,6 +1,18 @@
-version: '3.3'
+version: "3.3"
 
 services:
+  SERVER:
+    image: meeting_nginx
+    restart: unless-stopped
+    ports:
+      - 3000:80
+    working_dir: /opt/app
+    volumes:
+      - ./app:/opt/app
+    depends_on:
+      - SERVER_DEV
+      - DB
+      - REDIS
   DB:
     image: meeting_db
     restart: unless-stopped
